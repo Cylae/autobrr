@@ -86,7 +86,9 @@ func (s *Server) Start() error {
 	go s.checkUpdates()
 
 	// start cron scheduler
-	s.scheduler.Start()
+	if err := s.scheduler.Start(); err != nil {
+		s.log.Error().Err(err).Msg("Could not start scheduler")
+	}
 
 	// instantiate indexers
 	if err := s.indexerService.Start(); err != nil {
