@@ -297,7 +297,6 @@ func (h feedHandler) latestRun(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(feed)) // #nosec G104
-
+	w.Write([]byte(feed))
 
 }

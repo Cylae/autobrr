@@ -138,8 +138,7 @@ func (sm *ConnectionStateMachine) transitionIfNeeded(to ConnectionState) {
 		return
 	}
 
-	_ = sm.transition(to) // #nosec G104
-
+	sm.transition(to)
 }
 
 func (sm *ConnectionStateMachine) updateOperationalState() {
@@ -309,13 +308,11 @@ func (sm *ConnectionStateMachine) handleError() {
 // Event handlers called by IRC callbacks
 
 func (sm *ConnectionStateMachine) OnConnecting() {
-	_ = sm.transition(StateConnecting) // #nosec G104
-
+	sm.transition(StateConnecting)
 }
 
 func (sm *ConnectionStateMachine) OnConnected() {
-	_ = sm.transition(StateConnected) // #nosec G104
-
+	sm.transition(StateConnected)
 
 	// Determine next state based on auth requirements
 	sm.handler.m.RLock()
@@ -327,11 +324,9 @@ func (sm *ConnectionStateMachine) OnConnected() {
 		sm.handler.setBotMode()
 		// Will transition to auth in handleMode callback
 	} else if needsAuth {
-		_ = sm.transition(StateAuthenticating) // #nosec G104
-
+		sm.transition(StateAuthenticating)
 	} else {
-		_ = sm.transition(StateAuthenticated) // #nosec G104
-
+		sm.transition(StateAuthenticated)
 	}
 }
 
@@ -341,8 +336,7 @@ func (sm *ConnectionStateMachine) OnAuthenticated() {
 	sm.m.RUnlock()
 
 	if currentState == StateAuthenticating || currentState == StateConnected {
-		_ = sm.transition(StateAuthenticated) // #nosec G104
-
+		sm.transition(StateAuthenticated)
 	}
 }
 
@@ -379,8 +373,7 @@ func (sm *ConnectionStateMachine) OnError(reason string) {
 }
 
 func (sm *ConnectionStateMachine) OnDisconnected() {
-	_ = sm.transition(StateDisconnected) // #nosec G104
-
+	sm.transition(StateDisconnected)
 }
 
 func (sm *ConnectionStateMachine) GetState() ConnectionState {

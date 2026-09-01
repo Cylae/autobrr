@@ -163,7 +163,7 @@ func (r *DownloadClientRepo) Store(ctx context.Context, client *domain.DownloadC
 		return errors.Wrap(err, "error executing query")
 	}
 
-	client.ID = int32(retID) // #nosec G115 // #nosec G115 // #nosec G115
+	client.ID = int32(retID)
 
 	r.log.Debug().Int32("client_id", client.ID).Msg("download client store")
 
