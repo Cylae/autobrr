@@ -258,8 +258,7 @@ func (sm *ChannelStateMachine) Start() {
 
 	if !sm.channel.IsEnabled() {
 		sm.log.Debug().Msg("channel disabled, skipping join workflow")
-		_ = sm.transition(ChannelStateDisabled) // #nosec G104
-
+		sm.transition(ChannelStateDisabled)
 		return
 	}
 
@@ -268,13 +267,11 @@ func (sm *ChannelStateMachine) Start() {
 	sm.m.RUnlock()
 
 	if hasInvite {
-		_ = sm.transition(ChannelStateAwaitingInvite) // #nosec G104
-
+		sm.transition(ChannelStateAwaitingInvite)
 		return
 	}
 
-	_ = sm.transition(ChannelStateJoining) // #nosec G104
-
+	sm.transition(ChannelStateJoining)
 }
 
 // Reset returns the state machine to its initial Idle state and clears the
@@ -316,8 +313,7 @@ func (sm *ChannelStateMachine) handleAwaitingInvite() {
 	inviteCommand := sm.inviteCommand
 	if inviteCommand == "" {
 		sm.m.Unlock()
-		_ = sm.transition(ChannelStateJoining) // #nosec G104
-
+		sm.transition(ChannelStateJoining)
 		return
 	}
 	sm.lastAttempt = time.Now()
@@ -386,8 +382,7 @@ func (sm *ChannelStateMachine) runJoin() {
 	sm.m.Unlock()
 
 	if inviteCommand != "" && !joinAfterInvite {
-		_ = sm.transition(ChannelStateAwaitingInvite) // #nosec G104
-
+		sm.transition(ChannelStateAwaitingInvite)
 		return
 	}
 
@@ -430,8 +425,7 @@ func (sm *ChannelStateMachine) OnInvite(nick string) {
 	sm.m.Unlock()
 
 	sm.log.Debug().Str("from", nick).Msg("received invite, joining channel")
-	_ = sm.transition(ChannelStateJoining) // #nosec G104
-
+	sm.transition(ChannelStateJoining)
 }
 
 func (sm *ChannelStateMachine) handleWaitForInviteBot() {
@@ -454,8 +448,7 @@ func (sm *ChannelStateMachine) handleWaitForInviteBot() {
 		return
 	}
 
-	_ = sm.transition(ChannelStateAwaitingInvite) // #nosec G104
-
+	sm.transition(ChannelStateAwaitingInvite)
 }
 
 // OnInviteBotResponse is called when a present invite bot answers our invite
@@ -531,23 +524,20 @@ func (sm *ChannelStateMachine) onInviteResponseTimeout(gen int) {
 }
 
 func (sm *ChannelStateMachine) OnNoSuchNick(nick string) {
-	_ = sm.transition(ChannelStateInviteFailedNoSuchNick) // #nosec G104
-
+	sm.transition(ChannelStateInviteFailedNoSuchNick)
 }
 
 func (sm *ChannelStateMachine) handleNoSuchNick() {
 	sm.log.Debug().Msg("no such nick")
 	// route into the backoff/retry loop
-	_ = sm.transition(ChannelStateAwaitingInviteBot) // #nosec G104
-
+	sm.transition(ChannelStateAwaitingInviteBot)
 }
 
 func (sm *ChannelStateMachine) OnJoinSuccess() {
 	if sm.CurrentState() == ChannelStateMonitoring {
 		return
 	}
-	_ = sm.transition(ChannelStateMonitoring) // #nosec G104
-
+	sm.transition(ChannelStateMonitoring)
 }
 
 func (sm *ChannelStateMachine) handleMonitoring() {
@@ -669,12 +659,10 @@ func (sm *ChannelStateMachine) scheduleErrorRetry(attempt int) {
 	}
 
 	if inviteCommand != "" {
-		_ = sm.transition(ChannelStateAwaitingInvite) // #nosec G104
-
+		sm.transition(ChannelStateAwaitingInvite)
 		return
 	}
-	_ = sm.transition(ChannelStateJoining) // #nosec G104
-
+	sm.transition(ChannelStateJoining)
 }
 
 // errorRetryDelay returns how long to wait before retrying from Error and
@@ -731,8 +719,7 @@ func (sm *ChannelStateMachine) SetInviteCommand(inviteCommand string) {
 
 	// transition outside the lock; transition() acquires sm.m itself
 	if changed {
-		_ = sm.transition(ChannelStateJoining) // #nosec G104
-
+		sm.transition(ChannelStateJoining)
 	}
 }
 

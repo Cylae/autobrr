@@ -67,7 +67,7 @@ func (h logsHandler) files(w http.ResponseWriter, r *http.Request) {
 			response.Files = append(response.Files, LogFile{
 				Name:      d.Name(),
 				SizeBytes: i.Size(),
-				Size:      humanize.Bytes(uint64(i.Size())), // #nosec G115 // #nosec G115
+				Size:      humanize.Bytes(uint64(i.Size())),
 				UpdatedAt: i.ModTime(),
 			})
 		}

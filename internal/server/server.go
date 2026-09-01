@@ -91,8 +91,7 @@ func (s *Server) Start() error {
 	go s.checkUpdates()
 
 	// start cron scheduler
-	_ = s.scheduler.Start() // #nosec G104
-
+	s.scheduler.Start()
 
 	if err := s.notificationService.Start(); err != nil {
 		s.log.Error().Err(err).Msg("failed to start notification service")

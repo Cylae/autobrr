@@ -840,8 +840,7 @@ func (h *Handler) handleNickServ(msg ircmsg.Message) {
 
 		h.log.Debug().Str("notice", msg.Params[1]).Msg("nickserv rejected bare identify, retrying with account")
 
-		_ = h.NickServIdentify() // #nosec G104
-
+		h.NickServIdentify()
 		return
 	}
 
@@ -963,8 +962,7 @@ func (h *Handler) setBotMode() {
 	}
 
 	_, char := h.botModeConfig()
-	_ = client.Send("MODE", h.CurrentNick(), "+"+char) // #nosec G104
-
+	client.Send("MODE", h.CurrentNick(), "+"+char)
 }
 
 // authenticate sends NickServIdentify if not authenticated
@@ -983,8 +981,7 @@ func (h *Handler) authenticate() {
 		return
 	case nickServEnabled:
 		h.log.Trace().Msg("sending NickServ identify")
-		_ = h.NickServIdentify() // #nosec G104
-
+		h.NickServIdentify()
 	default:
 		h.setAuthenticated()
 	}

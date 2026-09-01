@@ -113,8 +113,8 @@ func CheckHash(password, hash string) (match bool, params *Params, err error) {
 
 	otherKey := argon2.IDKey([]byte(password), salt, params.Iterations, params.Memory, params.Parallelism, params.KeyLength)
 
-	keyLen := int32(len(key)) // #nosec G115
-	otherKeyLen := int32(len(otherKey)) // #nosec G115
+	keyLen := int32(len(key))
+	otherKeyLen := int32(len(otherKey))
 
 	if subtle.ConstantTimeEq(keyLen, otherKeyLen) == 0 {
 		return false, params, nil
@@ -162,13 +162,13 @@ func DecodeHash(hash string) (params *Params, salt, key []byte, err error) {
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	params.SaltLength = uint32(len(salt)) // #nosec G115
+	params.SaltLength = uint32(len(salt))
 
 	key, err = base64.RawStdEncoding.Strict().DecodeString(vals[5])
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	params.KeyLength = uint32(len(key)) // #nosec G115
+	params.KeyLength = uint32(len(key))
 
 	return params, salt, key, nil
 }

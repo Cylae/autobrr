@@ -49,8 +49,7 @@ func newAnchoredSchedule(interval time.Duration, lastRun time.Time, now time.Tim
 		wheel = pinWheel(interval)
 
 		h := fnv.New32a()
-		_, _ = h.Write([]byte(identifier)) // #nosec G104
-
+		h.Write([]byte(identifier))
 		pin = time.Duration(uint64(h.Sum32())%uint64(wheel/time.Second)) * time.Second
 	}
 
